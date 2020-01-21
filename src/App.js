@@ -44,7 +44,7 @@ function App() {
             <header>
               <img src="https://avatars0.githubusercontent.com/u/50272051?s=460&v=4" alt="Guilherme Mattos"/>
               <div className="user-info">
-                <strong>Guilherme MAttos</strong>
+                <strong>Guilherme Mattos</strong>
                 <span>React, Vue, Node</span>
               </div>
             </header>
