@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import api from './services/api';
 
 import './global.css';
 import './App.css';
@@ -7,6 +8,8 @@ import './Main.css';
 
 
 function App() {
+  const [devs, setDevs] = useState([]);
+
   const [github_username, setGithubusername] = useState('');
   const [techs, setTechs] = useState('');
 
@@ -30,8 +33,30 @@ function App() {
     )
   }, []);
 
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, [])
+
   async function handleAddDev(e) {
     e.preventDefault();
+
+    const response = await api.post('/devs', {
+      github_username,
+      techs,
+      latitude,
+      longitude,
+    });
+
+    setGithubusername('');
+    setTechs('');
+
+    // setDevs([...devs, response.data]);
   }
 
   return (
@@ -93,53 +118,19 @@ function App() {
       </aside>
       <main>
         <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/50272051?s=460&v=4" alt="Guilherme Mattos"/>
-              <div className="user-info">
-                <strong>Guilherme Mattos</strong>
-                <span>React, Vue, Node</span>
-              </div>
-            </header>
-            <p>Learning ervery day :D</p>
-            <a href="https://github.com/guimattos1249">Acessar Perfil no Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/50272051?s=460&v=4" alt="Guilherme Mattos"/>
-              <div className="user-info">
-                <strong>Guilherme MAttos</strong>
-                <span>React, Vue, Node</span>
-              </div>
-            </header>
-            <p>Learning ervery day :D</p>
-            <a href="https://github.com/guimattos1249">Acessar Perfil no Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/50272051?s=460&v=4" alt="Guilherme Mattos"/>
-              <div className="user-info">
-                <strong>Guilherme MAttos</strong>
-                <span>React, Vue, Node</span>
-              </div>
-            </header>
-            <p>Learning ervery day :D</p>
-            <a href="https://github.com/guimattos1249">Acessar Perfil no Github</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars0.githubusercontent.com/u/50272051?s=460&v=4" alt="Guilherme Mattos"/>
-              <div className="user-info">
-                <strong>Guilherme MAttos</strong>
-                <span>React, Vue, Node</span>
-              </div>
-            </header>
-            <p>Learning ervery day :D</p>
-            <a href="https://github.com/guimattos1249">Acessar Perfil no Github</a>
-          </li>
+          {devs.map(dev => (
+            <li key={dev._id} className="dev-item">
+              <header>
+                <img src={dev.avatar_url} alt={dev.name} />
+                <div className="user-info">
+                  <strong>{dev.name}</strong>
+                  <span>{dev.techs.join(', ')}</span>
+                </div>
+              </header>
+              <p>{dev.bio}</p>
+              <a href={`https://github.com/${dev.github_username}`}>Acessar Perfil Github.</a>
+            </li>
+          ))}
         </ul>
       </main>
     </div>
